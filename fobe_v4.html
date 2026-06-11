@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FOBE</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@500,600,700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root,[data-theme=dark]{
+  --bg:#0a0d12;--surface:#111720;--surface2:#171e28;--border:#232c38;
+  --text:#edf2f7;--muted:#8a95a8;--primary:#36c2c8;--gold:#f0b33b;--danger:#ff5ca8;
+  --r:1.3rem;--shadow:0 28px 80px rgba(0,0,0,.5);
+  --font:Satoshi,sans-serif;--fontd:'General Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--font);color:var(--text);background:var(--bg);position:relative}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% -10%,rgba(54,194,200,.13),transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 110%,rgba(240,179,59,.09),transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 50%,rgba(54,194,200,.04),transparent 60%);
+  animation:bgshift 12s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes bgshift{
+  0%{background:radial-gradient(ellipse 80% 60% at 10% -10%,rgba(54,194,200,.13),transparent 60%),radial-gradient(ellipse 60% 50% at 90% 110%,rgba(240,179,59,.09),transparent 55%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(54,194,200,.04),transparent 60%);}
+  50%{background:radial-gradient(ellipse 80% 60% at 30% 20%,rgba(54,194,200,.10),transparent 60%),radial-gradient(ellipse 60% 50% at 70% 80%,rgba(240,179,59,.11),transparent 55%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(255,92,168,.03),transparent 60%);}
+  100%{background:radial-gradient(ellipse 80% 60% at 80% 10%,rgba(54,194,200,.08),transparent 60%),radial-gradient(ellipse 60% 50% at 20% 90%,rgba(240,179,59,.12),transparent 55%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(54,194,200,.05),transparent 60%);}
+}
+#page-auth,#page-onboarding,#page-app{position:relative;z-index:1}
+#page-auth{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-box{background:rgba(17,23,32,.85);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);width:min(460px,100%);padding:40px 36px}
+.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:32px}.auth-logo svg{width:40px;height:40px;color:var(--primary)}
+.auth-logo h1{font:700 1.5rem var(--fontd);margin:0}.auth-logo p{font-size:.75rem;color:var(--muted);margin:2px 0 0}
+.auth-tabs{display:flex;gap:8px;margin-bottom:28px}.auth-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font:600 .9rem var(--font);cursor:pointer;transition:.2s}
+.auth-tab.active{background:rgba(54,194,200,.12);border-color:rgba(54,194,200,.4);color:var(--primary)}
+.auth-form{display:none;flex-direction:column;gap:14px}.auth-form.active{display:flex}
+.field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:600}
+.field input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(10,13,18,.8);color:var(--text);font:inherit;font-size:.95rem}
+.field input:focus{outline:none;border-color:rgba(54,194,200,.5)}
+.btn-main{width:100%;padding:13px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--primary),#4dd9de);color:#041416;font:700 1rem var(--font);cursor:pointer;margin-top:4px;transition:.2s}
+.btn-main:hover{opacity:.9;transform:translateY(-1px)}.auth-note{font-size:.78rem;color:var(--muted);text-align:center;margin-top:8px}
+#page-onboarding{display:none;min-height:100dvh;align-items:center;justify-content:center;padding:24px}
+.onb-box{background:rgba(17,23,32,.9);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);width:min(680px,100%);padding:40px}
+.onb-step{display:none}.onb-step.active{display:block;animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.onb-header{margin-bottom:28px}.onb-header .tag{display:inline-flex;padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(54,194,200,.12);color:var(--primary);margin-bottom:12px}
+.onb-header h2{font:700 1.8rem var(--fontd);margin-bottom:8px}.onb-header p{color:var(--muted);line-height:1.6}
+.sport-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.sport-card{padding:20px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:.2s;text-align:center}
+.sport-card:hover,.sport-card.selected{border-color:var(--gold);background:rgba(240,179,59,.06)}
+.sport-card .icon{display:flex;align-items:center;justify-content:center;margin:0 auto 12px;width:48px;height:48px;border-radius:14px;background:rgba(54,194,200,.08);color:var(--primary)}
+.sport-card .icon svg{width:26px;height:26px}.sport-card strong{font-size:1rem}.sport-card p{font-size:.78rem;color:var(--muted);margin-top:4px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.opt{padding:13px 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;text-align:left;color:var(--text);font:inherit;font-size:.88rem;transition:.2s;line-height:1.4}
+.opt:hover,.opt.selected{border-color:rgba(54,194,200,.5);background:rgba(54,194,200,.08)}
+.onb-controls{display:flex;justify-content:flex-end;gap:10px;margin-top:28px}
+.btn-sec{padding:11px 20px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font:600 .9rem var(--font);cursor:pointer}
+.btn-pri{padding:11px 24px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--primary),#4dd9de);color:#041416;font:700 .9rem var(--font);cursor:pointer;transition:.2s}
+.btn-pri:hover{opacity:.9;transform:translateY(-1px)}.btn-pri:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.result-anim{text-align:center;padding:20px 0}.result-anim .big-icon{display:flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:50%;background:rgba(240,179,59,.1);border:2px solid rgba(240,179,59,.3);margin:0 auto 16px;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+.result-anim .big-icon svg{width:40px;height:40px;color:var(--gold)}@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.result-anim h2{font:700 2rem var(--fontd);margin:0 0 8px}.result-anim .liga-badge{display:inline-flex;padding:8px 20px;border-radius:999px;font-size:.9rem;font-weight:800;margin-bottom:16px}
+.liga-1{background:rgba(240,179,59,.15);color:var(--gold);border:1px solid rgba(240,179,59,.4)}.liga-2{background:rgba(54,194,200,.12);color:var(--primary);border:1px solid rgba(54,194,200,.4)}.liga-3{background:rgba(255,92,168,.1);color:var(--danger);border:1px solid rgba(255,92,168,.3)}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}.result-stat{padding:16px;border-radius:14px;border:1px solid var(--border);background:var(--surface2);text-align:center}.result-stat .k{font-size:.75rem;color:var(--muted);margin-bottom:6px}.result-stat .v{font-size:1.4rem;font-weight:800}
+#page-app{display:none;min-height:100dvh;grid-template-columns:280px 1fr}.sidebar{border-right:1px solid var(--border);padding:28px 20px;display:flex;flex-direction:column;gap:20px;background:rgba(17,23,32,.6);backdrop-filter:blur(16px)}
+.sb-logo{display:flex;align-items:center;gap:10px;padding-bottom:20px;border-bottom:1px solid var(--border)}.sb-logo svg{width:36px;height:36px;color:var(--primary)}.sb-logo h1{font:700 1.2rem var(--fontd);margin:0}.sb-logo span{font-size:.7rem;color:var(--muted)}
+.sb-user{padding:14px;border-radius:14px;background:var(--surface2);border:1px solid var(--border)}.sb-user .name{font-weight:700;font-size:.95rem}.sb-user .liga{font-size:.75rem;color:var(--muted);margin-top:3px}
+.sb-pm{margin-top:10px}.sb-pm .label{font-size:.72rem;color:var(--muted);margin-bottom:4px}.sb-pm .val{font-size:1.5rem;font-weight:900;color:var(--gold)}
+.pm-bar{height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:6px}.pm-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--gold));border-radius:999px;transition:width .5s ease}
+.sb-nav{display:flex;flex-direction:column;gap:4px;margin-top:4px}.sb-nav button{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;border:none;background:transparent;color:var(--muted);font:600 .88rem var(--font);cursor:pointer;text-align:left;transition:.2s}
+.sb-nav button:hover{background:rgba(255,255,255,.04);color:var(--text)}.sb-nav button.active{background:rgba(54,194,200,.1);color:var(--primary)}.sb-nav button svg{width:18px;height:18px;flex-shrink:0}
+.main-content{padding:32px;overflow-y:auto;max-height:100dvh}.tab-panel{display:none;animation:fadein .3s ease}.tab-panel.active{display:block}
+.page-title{margin-bottom:24px}.page-title h2{font:700 1.6rem var(--fontd);margin-bottom:6px}.page-title p{color:var(--muted);font-size:.88rem}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.stat-card{padding:18px;border-radius:var(--r);background:var(--surface);border:1px solid var(--border)}.stat-card .k{font-size:.75rem;color:var(--muted);margin-bottom:6px}.stat-card .v{font-size:1.5rem;font-weight:900}.stat-card .hint{font-size:.72rem;color:var(--muted);margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{padding:22px;border-radius:var(--r);background:var(--surface);border:1px solid var(--border)}.card h3{font:600 1rem var(--fontd);margin-bottom:14px}
+.condiciones-list{display:grid;gap:8px}.cond-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);font-size:.82rem}.cond-row span:last-child{font-weight:700}
+.green{color:var(--primary)}.gold{color:var(--gold)}.red{color:var(--danger)}
+.ranking-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}.filter-btn{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font:inherit;font-size:.82rem;cursor:pointer}.filter-btn.active{background:rgba(54,194,200,.12);border-color:rgba(54,194,200,.4);color:var(--primary)}
+table{width:100%;border-collapse:collapse}th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:.85rem}th{color:var(--muted);font-size:.78rem;font-weight:600}.me-row{background:rgba(54,194,200,.05);outline:1px solid rgba(54,194,200,.3)}
+.badge{display:inline-flex;padding:3px 9px;border-radius:999px;font-size:.72rem;font-weight:800}.badge-g{background:rgba(240,179,59,.12);color:var(--gold)}.badge-t{background:rgba(54,194,200,.12);color:var(--primary)}.badge-p{background:rgba(255,92,168,.1);color:var(--danger)}
+.mercados-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}.mercado-card{padding:20px;border-radius:var(--r);background:var(--surface);border:1px solid var(--border);transition:.2s}
+.mercado-card .mc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.mercado-card h4{font:600 1rem var(--fontd);margin:0}.mercado-card .hora{font-size:.75rem;color:var(--muted)}.mercado-card .match{font-weight:700;margin-bottom:10px;font-size:.92rem}
+.picks-grid{display:grid;gap:6px}.pick-btn{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:.82rem;cursor:pointer;text-align:left;transition:.2s;display:flex;justify-content:space-between;align-items:center}
+.pick-btn:hover{border-color:rgba(54,194,200,.4);background:rgba(54,194,200,.06)}.pick-btn.selected{background:rgba(54,194,200,.12);border-color:var(--primary);color:var(--primary)}.pick-btn.added{background:rgba(54,194,200,.08);border-color:rgba(54,194,200,.3);color:var(--primary);cursor:default}
+.pick-quota{font-weight:800;font-size:.9rem;color:var(--gold)}
+.pronostico-panel{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(17,23,32,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:20px 32px;display:none;animation:slideup .3s ease}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}.pronostico-panel.visible{display:block}
+.panel-inner{max-width:720px;margin:0 auto;display:grid;grid-template-columns:1fr auto auto auto;gap:16px;align-items:center}
+.panel-info .label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}.panel-info .value{font-weight:700;font-size:1rem}
+.panel-input{display:flex;flex-direction:column;gap:4px}.panel-input label{font-size:.72rem;color:var(--muted)}.panel-input input{width:120px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:700 1rem var(--font);text-align:right}.panel-input input:focus{outline:none;border-color:var(--primary)}
+.panel-retorno{text-align:center}.panel-retorno .label{font-size:.72rem;color:var(--muted)}.panel-retorno .valor{font-size:1.4rem;font-weight:900;color:var(--gold)}
+.btn-confirmar{padding:12px 24px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--primary),#4dd9de);color:#041416;font:700 .95rem var(--font);cursor:pointer;white-space:nowrap;transition:.2s}.btn-confirmar:hover{opacity:.9}
+.btn-cancelar-panel{padding:12px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font:600 .88rem var(--font);cursor:pointer}
+.pronosticos-section{margin-top:28px}.pronosticos-tabs{display:flex;gap:8px;margin-bottom:16px}.ptab{padding:7px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font:600 .82rem var(--font);cursor:pointer;transition:.2s}.ptab.active{background:rgba(54,194,200,.12);border-color:rgba(54,194,200,.4);color:var(--primary)}
+.pronostico-item{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:13px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--border);margin-bottom:8px;font-size:.85rem;transition:.2s}
+.pro-info .match-name{font-weight:700;font-size:.9rem;margin-bottom:3px}.pro-info .pick-name{color:var(--muted);font-size:.78rem}.pro-montos{text-align:right}.pro-montos .invertido{font-size:.75rem;color:var(--muted)}.pro-montos .retorno{font-weight:800;color:var(--gold);font-size:.95rem}
+.pro-estado{font-size:.72rem;font-weight:800;padding:5px 12px;border-radius:999px;white-space:nowrap}.pro-ok{background:rgba(54,194,200,.12);color:var(--primary)}.pro-fail{background:rgba(255,92,168,.1);color:var(--danger)}.pro-pend{background:rgba(240,179,59,.1);color:var(--gold)}
+.btn-cancelar-pro{padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font:600 .75rem var(--font);cursor:pointer;transition:.2s}.btn-cancelar-pro:hover{border-color:var(--danger);color:var(--danger)}
+.note{font-size:.78rem;color:var(--muted);padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;border-left:2px solid rgba(54,194,200,.4)}
+@media(max-width:900px){#page-app{grid-template-columns:1fr!important;grid-template-rows:auto 1fr}.sidebar{flex-direction:row;flex-wrap:wrap;padding:16px;border-right:none;border-bottom:1px solid var(--border)}.sb-pm,.sb-user{display:none}.sb-nav{flex-direction:row;flex-wrap:wrap;margin-top:0}.sb-nav button{padding:8px 12px;font-size:.8rem}.stats4,.result-grid{grid-template-columns:repeat(2,1fr)}.grid2,.sport-grid,.options{grid-template-columns:1fr}.main-content{padding:20px;max-height:none}.panel-inner{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}.pronostico-panel{padding:16px 20px}}
+</style>
+</head>
+<body>
+<div id="page-auth"><div class="auth-box"><div class="auth-logo"><svg viewBox="0 0 64 64" fill="none"><rect x="8" y="8" width="48" height="48" rx="14" stroke="currentColor" stroke-width="4"/><path d="M22 22h20M22 32h14M22 42h10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><div><h1>FOBE</h1><p>Funded Sports Evaluation</p></div></div><div class="auth-tabs"><button class="auth-tab active" onclick="showAuthForm('login')">Iniciar sesión</button><button class="auth-tab" onclick="showAuthForm('registro')">Crear cuenta</button></div><form class="auth-form active" id="form-login" onsubmit="handleLogin(event)"><div class="field"><label>Email</label><input type="email" id="login-email" placeholder="usuario@email.com" required/></div><div class="field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" required/></div><button class="btn-main" type="submit">Entrar</button><p class="auth-note">¿No tienes cuenta? <a href="#" onclick="showAuthForm('registro');return false" style="color:var(--primary)">Regístrate aquí</a></p></form><form class="auth-form" id="form-registro" onsubmit="handleRegistro(event)"><div class="field"><label>Nombre completo</label><input type="text" id="reg-nombre" placeholder="Tu nombre" required/></div><div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="usuario@email.com" required/></div><div class="field"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="Mínimo 8 caracteres" minlength="8" required/></div><button class="btn-main" type="submit">Crear cuenta y comenzar</button><p class="auth-note">Al registrarte realizarás un test de habilidades para ser clasificado en tu liga.</p></form></div></div>
+<div id="page-onboarding" style="display:none;min-height:100dvh;align-items:center;justify-content:center;padding:24px"><div class="onb-box"><div class="onb-step active" id="onb-bienvenida"><div class="onb-header"><span class="tag">Bienvenido/a a FOBE</span><h2 id="onb-welcome-name">Hola</h2><p>Antes de acceder a la plataforma vamos a realizar un <strong>test de habilidades</strong> para clasificarte en la liga que corresponde a tu nivel. El test tiene 12 preguntas, tarda unos 3 minutos y determinará tu <strong>liga inicial y posición en el ranking</strong>.</p></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0"><div style="padding:16px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);text-align:center"><div style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:rgba(240,179,59,.1);margin:0 auto 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0b33b" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div><div style="font-size:.8rem;font-weight:700">Liga asignada</div><div style="font-size:.72rem;color:var(--muted);margin-top:4px">Según tu nivel real</div></div><div style="padding:16px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);text-align:center"><div style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:rgba(54,194,200,.1);margin:0 auto 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#36c2c8" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div style="font-size:.8rem;font-weight:700">Ranking en vivo</div><div style="font-size:.72rem;color:var(--muted);margin-top:4px">Compite con otros usuarios</div></div><div style="padding:16px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);text-align:center"><div style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:rgba(54,194,200,.08);margin:0 auto 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#36c2c8" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div style="font-size:.8rem;font-weight:700">Prize Money</div><div style="font-size:.72rem;color:var(--muted);margin-top:4px">Crece con tus aciertos</div></div></div><div class="onb-controls"><button class="btn-pri" onclick="onbNext()">Comenzar test →</button></div></div><div class="onb-step" id="onb-deporte"><div class="onb-header"><span class="tag">Pregunta 1 de 12</span><h2>¿En qué deporte te especializas?</h2><p>Esto nos permite personalizar el resto del test a tu especialidad.</p></div><div class="sport-grid"><div class="sport-card" onclick="selectSport('futbol',this)"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div><strong>Fútbol</strong><p>LaLiga, Premier, Champions…</p></div><div class="sport-card" onclick="selectSport('tenis',this)"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93c4.08 4.08 4.08 10.05 0 14.14"/><path d="M19.07 4.93c-4.08 4.08-4.08 10.05 0 14.14"/></svg></div><strong>Tenis</strong><p>ATP, WTA, superficies…</p></div><div class="sport-card" onclick="selectSport('basket',this)"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93c4.08 4.08 4.08 10.05 0 14.14"/><path d="M19.07 4.93c-4.08 4.08-4.08 10.05 0 14.14"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div><strong>Baloncesto</strong><p>NBA, Euroliga, ACB…</p></div><div class="sport-card" onclick="selectSport('varios',this)"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><strong>Multideporte</strong><p>Varios deportes a la vez</p></div></div><div class="onb-controls"><button class="btn-sec" onclick="onbPrev()">Volver</button></div></div><div class="onb-step" id="onb-q"></div><div class="onb-step" id="onb-result"><div class="result-anim"><div class="big-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div><p style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Clasificación completada</p><h2 id="res-liga-nombre">Liga 1 Élite</h2><span class="liga-badge" id="res-liga-badge">Liga 1</span><p style="color:var(--muted);font-size:.88rem;max-width:380px;margin:0 auto 20px">Tu posición de salida en el ranking y tu Prize Money inicial ya están configurados.</p></div><div class="result-grid"><div class="result-stat"><div class="k">Prize Money inicial</div><div class="v gold" id="res-pm">—</div></div><div class="result-stat"><div class="k">Posición inicial</div><div class="v" id="res-pos" style="color:var(--primary)">—</div></div><div class="result-stat"><div class="k">Puntuación test</div><div class="v" id="res-score">—</div></div></div><div class="onb-controls" style="justify-content:center"><button class="btn-pri" onclick="enterApp()">Acceder a la plataforma →</button></div></div></div></div>
+<div id="page-app" style="display:none;grid-template-columns:280px 1fr"><aside class="sidebar"><div class="sb-logo"><svg viewBox="0 0 64 64" fill="none"><rect x="8" y="8" width="48" height="48" rx="14" stroke="currentColor" stroke-width="4"/><path d="M22 22h20M22 32h14M22 42h10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><div><h1>FOBE</h1><span>Funded Sports Evaluation</span></div></div><div class="sb-user"><div class="name" id="sb-name">—</div><div class="liga" id="sb-liga">—</div><div class="sb-pm"><div class="label">Prize Money</div><div class="val" id="sb-pm">—</div><div class="pm-bar"><div class="pm-bar-fill" id="sb-pmbar" style="width:28%"></div></div></div></div><nav class="sb-nav"><button class="active" onclick="showTab('perfil',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil</button><button onclick="showTab('ranking',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Ranking</button><button onclick="showTab('mercados',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Mercados</button>
+      <button onclick="showTab('mispronosticos',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Mis pronósticos</button></nav></aside><main class="main-content"><div class="tab-panel active" id="tab-perfil"><div class="page-title"><h2>Mi perfil</h2><p>Evolución del reto en tiempo real y condiciones activas de tu cuenta.</p></div><div class="stats4"><div class="stat-card"><div class="k">Prize Money</div><div class="v gold" id="p-pm">—</div><div class="hint">Actualizado por pronóstico</div></div><div class="stat-card"><div class="k">Drawdown</div><div class="v" id="p-dd">0%</div><div class="hint">Pérdida máxima permitida: 40%</div></div><div class="stat-card"><div class="k">Pronósticos</div><div class="v" id="p-picks">0</div><div class="hint">Registrados en el reto</div></div><div class="stat-card"><div class="k">Posición ranking</div><div class="v green" id="p-rank">—</div><div class="hint">Liga <span id="p-liga-small">—</span></div></div></div><div style="margin-bottom:16px"><div class="card"><h3>Evolución del reto</h3><canvas id="perfil-chart" style="max-height:180px!important;height:180px"></canvas></div></div><div class="grid2"><div class="card"><h3>Condiciones activas</h3><div class="condiciones-list"><div class="cond-row"><span>Plan de capital</span><span class="gold" id="cond-plan">—</span></div><div class="cond-row"><span>Prize Money inicial</span><span class="gold" id="cond-pm-ini">—</span></div><div class="cond-row"><span>Por pronóstico acertado</span><span class="green">+2,5% del PM inicial</span></div><div class="cond-row"><span>Por pronóstico fallado</span><span class="red">−15% del PM inicial</span></div><div class="cond-row"><span>Objetivo top 3 liga</span><span class="gold">Bonus ×20%</span></div><div class="cond-row"><span>Drawdown máximo</span><span class="red">−40% = reto roto</span></div></div></div><div class="card"><h3>Historial de pronósticos</h3><div id="historial-list" style="display:grid;gap:8px;max-height:260px;overflow-y:auto"><p style="color:var(--muted);font-size:.85rem">Sin pronósticos aún. Ve a Mercados para empezar.</p></div></div></div></div><div class="tab-panel" id="tab-ranking"><div class="page-title"><h2>Ranking</h2><p>Clasificación en vivo de todos los participantes activos.</p></div><div class="ranking-header"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="filter-btn active" onclick="filterRanking('all',this)">Todas las ligas</button><button class="filter-btn" onclick="filterRanking('Liga 1',this)">Liga 1 Élite</button><button class="filter-btn" onclick="filterRanking('Liga 2',this)">Liga 2 Avanzada</button><button class="filter-btn" onclick="filterRanking('Liga 3',this)">Liga 3 Desarrollo</button></div></div><div class="card" style="padding:0;overflow:hidden"><table><thead><tr><th>#</th><th>Participante</th><th>Liga</th><th>Prize Money</th><th>Precisión</th><th>Estado</th></tr></thead><tbody id="ranking-body"></tbody></table></div><div class="note" style="margin-top:16px">El ranking se actualiza automáticamente con cada pronóstico registrado. Los datos en vivo se conectarán a Supabase en la siguiente fase.</div></div><div class="tab-panel" id="tab-mercados"><div class="page-title"><h2>Mercados</h2><p>Selecciona un evento y registra tu pronóstico. Cada acierto suma +2,5% al Prize Money.</p></div><div class="mercados-grid" id="mercados-grid"></div></div>
+
+    <!-- MIS PRONÓSTICOS -->
+    <div class="tab-panel" id="tab-mispronosticos">
+      <div class="page-title">
+        <h2>Mis pronósticos</h2>
+        <p>Seguimiento de todos tus pronósticos registrados.</p>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button class="ptab active" id="ptab-activo" onclick="filterPronos('activo',this)">Activos</button>
+        <button class="ptab" id="ptab-acertado" onclick="filterPronos('acertado',this)">Acertados</button>
+        <button class="ptab" id="ptab-fallado" onclick="filterPronos('fallado',this)">Fallados</button>
+      </div>
+      <div id="pronosticos-list"><p style="color:var(--muted);font-size:.85rem">Aún no tienes pronósticos. Ve a Mercados para registrar el primero.</p></div>
+    </div>
+
+  </main></div>
+<div class="pronostico-panel" id="pronostico-panel"><div class="panel-inner"><div class="panel-info"><div class="label">Evento seleccionado</div><div class="value" id="panel-match">—</div><div style="font-size:.8rem;color:var(--muted);margin-top:3px" id="panel-pick-name">—</div></div><div class="panel-input"><label>Cantidad a invertir (€)</label><input type="number" id="panel-cantidad" placeholder="0" min="1" oninput="calcRetorno()"/></div><div class="panel-retorno"><div class="label">Retorno potencial</div><div class="valor" id="panel-retorno">— €</div><div style="font-size:.72rem;color:var(--muted);margin-top:2px">Cuota: <span id="panel-cuota-label">—</span></div></div><div style="display:flex;gap:8px"><button class="btn-cancelar-panel" onclick="cerrarPanel()">Cancelar</button><button class="btn-confirmar" onclick="confirmarPronostico()">Registrar pronóstico</button></div></div></div>
+<script>
+const S={nombre:'Demo User',sport:'',score:0,liga:'Liga 2 Avanzada',ligaNum:0,pmInicial:6000,pmActual:6000,rankingPos:5,picks:0,wins:0,losses:0,pronosticos:[],pmHistory:[6000],answers:{},chartInst:null,perfilChartInst:null,panelPick:null,pronoFiltro:'activo'};
+const QS={
+  futbol:[
+    {q:'¿En qué ligas te especializas?',opts:['Top ligas (Premier, LaLiga, Serie A)','Ligas minoritarias','Competiciones internacionales','Todos los niveles'],score:[3,2,2,1]},
+    {q:'¿Analizas alineaciones y lesiones antes de cada pronóstico?',opts:['Siempre, es esencial','Solo en partidos clave','Rara vez','No lo considero'],score:[3,2,1,0]},
+    {q:'¿Qué % del capital arriesgas por pronóstico?',opts:['1-2%','2-7%','5-10%','Más del 10%'],score:[3,2,1,0]}
+  ],
+  tenis:[
+    {q:'¿En qué nivel te especializas?',opts:['Grand Slam','Masters 1000','ATP 250/500','Challenger/Futures'],score:[3,2,1,0]},
+    {q:'¿Analizas estadísticas de saque y resto?',opts:['Métricas detalladas','Stats básicas','Solo ranking y H2H','Intuición'],score:[3,2,1,0]},
+    {q:'¿Tienes en cuenta la fatiga y el calendario?',opts:['Siempre, es clave','En torneos largos','Rara vez','No lo considero'],score:[3,2,1,0]}
+  ],
+  basket:[
+    {q:'¿En qué competición te especializas?',opts:['NBA','Euroliga','ACB','Varias competiciones'],score:[3,2,1,2]},
+    {q:'¿Analizas back-to-backs y rotaciones?',opts:['Siempre','En partidos clave','Rara vez','No'],score:[3,2,1,0]},
+    {q:'¿Qué % del capital arriesgas por pronóstico?',opts:['1-2%','2-7%','5-10%','Más del 10%'],score:[3,2,1,0]}
+  ],
+  varios:[
+    {q:'¿Cuántos deportes cubres habitualmente?',opts:['2-3 deportes','4-5 deportes','Más de 5','Todos los disponibles'],score:[3,2,1,0]},
+    {q:'¿Cómo priorizas los eventos?',opts:['Por value de cuota','Por conocimiento del deporte','Por volumen de mercado','Por intuición'],score:[3,2,2,0]},
+    {q:'¿Gestionas un capital definido?',opts:['Sí, muy estricto','Sí, aproximado','A veces','No tengo capital definido'],score:[3,2,1,0]}
+  ]
+};
+const RANKING_DATA=[{pos:1,name:'Marta R.',liga:'Liga 1',pm:13640,precision:'71%',estado:'Activo'},{pos:2,name:'Carlos M.',liga:'Liga 1',pm:13210,precision:'68%',estado:'Activo'},{pos:3,name:'Iñigo S.',liga:'Liga 1',pm:12870,precision:'65%',estado:'Activo'},{pos:4,name:'Ana P.',liga:'Liga 2',pm:12340,precision:'63%',estado:'Activo'},{pos:5,name:'Sergio F.',liga:'Liga 2',pm:11980,precision:'61%',estado:'Activo'},{pos:6,name:'Laura V.',liga:'Liga 2',pm:11650,precision:'59%',estado:'Activo'},{pos:7,name:'David K.',liga:'Liga 3',pm:11290,precision:'57%',estado:'Activo'}];
+const MERCADOS=[{liga:'Premier League',hora:'Hoy 20:00',match:'Man United vs Arsenal',picks:[{label:'Man United gana',cuota:1.85},{label:'Empate',cuota:3.60},{label:'Arsenal gana',cuota:3.20}]},{liga:'LaLiga',hora:'Sáb 18:30',match:'Barcelona vs Real Madrid',picks:[{label:'Barcelona gana',cuota:2.10},{label:'Empate',cuota:3.40},{label:'Real Madrid gana',cuota:3.10}]},{liga:'ATP Madrid',hora:'Hoy 16:00',match:'Alcaraz vs Sinner',picks:[{label:'Alcaraz 2-0',cuota:2.10},{label:'Alcaraz 2-1',cuota:3.50},{label:'Sinner gana',cuota:2.80}]}];
+function showAuthForm(t){document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',i===(t==='login'?0:1)));document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));document.getElementById('form-'+t).classList.add('active')}
+function handleLogin(e){e.preventDefault();document.getElementById('page-auth').style.display='none';startApp()}
+function handleRegistro(e){e.preventDefault();document.getElementById('page-auth').style.display='none';document.getElementById('page-onboarding').style.display='flex'}
+let currentQ=0;
+function showOnbStep(id){document.querySelectorAll('.onb-step').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function onbNext(){showOnbStep('onb-deporte')}
+function onbPrev(){if(currentQ>0){currentQ--;renderQ();}else showOnbStep('onb-deporte')}
+function selectSport(sp,el){S.sport=sp;S.score=0;S.answers={};currentQ=0;document.querySelectorAll('.sport-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');setTimeout(()=>renderQ(),300)}
+function renderQ(){
+  const qs=QS[S.sport];
+  if(currentQ>=qs.length){calcAndShowResult();return;}
+  const q=qs[currentQ];
+  const el=document.getElementById('onb-q');
+  el.innerHTML=`<div class="onb-header"><span class="tag">Pregunta ${currentQ+1} de ${qs.length}</span><h2>${q.q}</h2></div><div class="options">${q.opts.map((o,i)=>`<button class="opt ${S.answers[currentQ]===i?'selected':''}" onclick="answerQ(${currentQ},${i},this)">${o}</button>`).join('')}</div><div class="onb-controls"><button class="btn-sec" onclick="onbPrev()">Volver</button><button class="btn-pri" id="q-next" ${S.answers[currentQ]===undefined?'disabled':''} onclick="nextQ()">Continuar →</button></div>`;
+  showOnbStep('onb-q');
+}
+function nextQ(){currentQ++;renderQ()}
+function answerQ(qi,choice,btn){
+  const qs=QS[S.sport];
+  if(S.answers[qi]!==undefined)S.score-=qs[qi].score[S.answers[qi]];
+  S.answers[qi]=choice;
+  S.score+=qs[qi].score[choice];
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('q-next').disabled=false;
+  setTimeout(()=>nextQ(),500);
+}
+function calcAndShowResult(){
+  const max=QS[S.sport].length*3;
+  const pct=S.score/max;
+  if(pct>=0.75){S.liga='Liga 1 Élite';S.ligaNum=1;S.pmInicial=10000;S.rankingPos=3;}
+  else if(pct>=0.45){S.liga='Liga 2 Avanzada';S.ligaNum=2;S.pmInicial=6000;S.rankingPos=5;}
+  else{S.liga='Liga 3 Desarrollo';S.ligaNum=3;S.pmInicial=3000;S.rankingPos=9;}
+  S.pmActual=S.pmInicial;S.pmHistory=[S.pmInicial];
+  document.getElementById('res-liga-nombre').textContent=S.liga;
+  const badge=document.getElementById('res-liga-badge');badge.textContent=S.liga;badge.className='liga-badge liga-'+S.ligaNum;
+  document.getElementById('res-pm').textContent=S.pmInicial.toLocaleString('es-ES')+' €';
+  document.getElementById('res-pos').textContent='#'+S.rankingPos;
+  document.getElementById('res-score').textContent=Math.round(pct*100)+' pts';
+  showOnbStep('onb-result');
+}
+function showResult(){calcAndShowResult()}
+function enterApp(){document.getElementById('page-onboarding').style.display='none';startApp()}
+function startApp(){document.getElementById('page-app').style.display='grid';updateSidebar();renderRanking('all');renderMercados();renderPerfil()}
+function updateSidebar(){document.getElementById('sb-name').textContent=S.nombre;document.getElementById('sb-liga').textContent=S.liga;document.getElementById('sb-pm').textContent=S.pmActual.toLocaleString('es-ES')+' €';document.getElementById('sb-pmbar').style.width='100%'}
+function showTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(tab==='ranking')renderRanking('all');
+  if(tab==='perfil')renderPerfil();
+  if(tab==='mispronosticos'){S.pronoFiltro='activo';document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));const at=document.getElementById('ptab-activo');if(at)at.classList.add('active');renderPronosticos();}
+}
+function renderPerfil(){document.getElementById('p-pm').textContent=S.pmActual.toLocaleString('es-ES')+' €';document.getElementById('p-dd').textContent='0.0%';document.getElementById('p-picks').textContent=S.picks;document.getElementById('p-rank').textContent='#'+S.rankingPos;document.getElementById('p-liga-small').textContent=S.liga;document.getElementById('cond-plan').textContent='Plan Avanzado';document.getElementById('cond-pm-ini').textContent='6.000 €';renderPerfilChart();renderHistorial()}
+function renderPerfilChart(){const canvas=document.getElementById('perfil-chart');if(!canvas)return;if(S.perfilChartInst)S.perfilChartInst.destroy();S.perfilChartInst=new Chart(canvas,{type:'line',data:{labels:['Inicio'],datasets:[{data:[6000],borderColor:'rgba(54,194,200,1)',backgroundColor:'rgba(54,194,200,0.08)',borderWidth:2,pointBackgroundColor:['rgba(54,194,200,1)'],pointRadius:5,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'transparent'},ticks:{color:'#a8b2c5',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'#a8b2c5',font:{size:11},callback:v=>v.toLocaleString('es-ES')+'€'}}}}})}
+function renderHistorial(){const list=document.getElementById('historial-list');if(!S.pronosticos.length){list.innerHTML='<p style="color:var(--muted);font-size:.85rem">Sin pronósticos aún. Ve a Mercados para empezar.</p>';return;}list.innerHTML=S.pronosticos.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);font-size:.82rem"><div><strong>${p.match}</strong><br><span style="color:var(--muted);font-size:.75rem">${p.pick}</span></div><span class="pro-estado ${p.res==='ok'?'pro-ok':p.res==='fail'?'pro-fail':'pro-pend'}">${p.res==='ok'?'Acertado':p.res==='fail'?'Fallado':'Activo'}</span></div>`).join('')}
+function renderRanking(filter){const me={pos:S.rankingPos,name:S.nombre,liga:'Liga 2',pm:S.pmActual,precision:'—',estado:'Activo'};let data=[...RANKING_DATA];data.splice(4,0,me);data.forEach((d,i)=>d.pos=i+1);if(filter!=='all')data=data.filter(d=>d.liga===filter||d.name===me.name);document.getElementById('ranking-body').innerHTML=data.map(d=>`<tr class="${d.name===S.nombre?'me-row':''}"><td><strong>#${d.pos}</strong></td><td>${d.name}${d.name===S.nombre?' <span style="font-size:.72rem;color:var(--primary)">(tú)</span>':''}</td><td><span class="badge ${d.liga==='Liga 1'?'badge-g':d.liga==='Liga 2'?'badge-t':'badge-p'}">${d.liga}</span></td><td>${d.pm.toLocaleString('es-ES')} €</td><td>${d.precision}</td><td><span style="font-size:.78rem;color:var(--primary)">${d.estado}</span></td></tr>`).join('')}
+function filterRanking(f,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRanking(f)}
+function renderMercados(){document.getElementById('mercados-grid').innerHTML=MERCADOS.map((m,mi)=>`<div class="mercado-card"><div class="mc-header"><h4>${m.liga}</h4><span class="hora">${m.hora}</span></div><div class="match">${m.match}</div><div class="picks-grid">${m.picks.map((pk,pi)=>{const key=mi+'-'+pi;return `<button class="pick-btn" onclick="seleccionarPick(${mi},${pi},this)"><span>${pk.label}</span><span class="pick-quota">${pk.cuota.toFixed(2)}</span></button>`}).join('')}</div></div>`).join('');}
+function seleccionarPick(mi,pi){const m=MERCADOS[mi];const pk=m.picks[pi];S.panelPick={mi,pi,key:mi+'-'+pi,match:m.match,pick:pk.label,cuota:pk.cuota};document.getElementById('panel-match').textContent=m.match;document.getElementById('panel-pick-name').textContent=pk.label;document.getElementById('panel-cuota-label').textContent=pk.cuota.toFixed(2)+'x';document.getElementById('panel-cantidad').value='';document.getElementById('panel-retorno').textContent='— €';document.getElementById('pronostico-panel').classList.add('visible');document.getElementById('panel-cantidad').focus()}
+function calcRetorno(){if(!S.panelPick)return;const cant=parseFloat(document.getElementById('panel-cantidad').value)||0;const ret=(cant*S.panelPick.cuota).toFixed(2);document.getElementById('panel-retorno').textContent=cant>0?(parseFloat(ret).toLocaleString('es-ES')+' €'):'— €'}
+function cerrarPanel(){document.getElementById('pronostico-panel').classList.remove('visible');S.panelPick=null}
+function confirmarPronostico(){
+  if(!S.panelPick)return;
+  const cant=parseFloat(document.getElementById('panel-cantidad').value)||0;
+  if(cant<=0){document.getElementById('panel-cantidad').style.borderColor='var(--danger)';document.getElementById('panel-cantidad').focus();return;}
+  document.getElementById('panel-cantidad').style.borderColor='';
+  const retorno=(cant*S.panelPick.cuota);
+  // Remove any existing activo with same key before adding
+  S.pronosticos=S.pronosticos.filter(p=>!(p.key===S.panelPick.key&&p.res==='activo'));
+  S.pronosticos.unshift({key:S.panelPick.key,match:S.panelPick.match,pick:S.panelPick.pick,cuota:S.panelPick.cuota,cantidad:cant,retorno:retorno,res:'activo',ts:Date.now()});
+  S.picks=S.pronosticos.length;
+  cerrarPanel();
+  renderMercados();
+  renderPronosticos();
+  if(document.getElementById('tab-perfil').classList.contains('active'))renderPerfil();
+  updateSidebar();
+}
+function cancelarPronostico(key){
+  const idx=S.pronosticos.findIndex(p=>p.key===key&&p.res==='activo');
+  if(idx>-1){
+    S.pronosticos.splice(idx,1);
+    S.picks=S.pronosticos.length;
+    renderMercados();
+    renderPronosticos();
+    if(document.getElementById('tab-perfil').classList.contains('active'))renderPerfil();
+    updateSidebar();
+  }
+}
+function filterPronos(estado,btn){
+  S.pronoFiltro=estado;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPronosticos();
+}
+function renderPronosticos(){
+  const lista=S.pronosticos.filter(p=>p.res===S.pronoFiltro);
+  const el=document.getElementById('pronosticos-list');
+  if(!el)return;
+  if(!lista.length){
+    const msgs={activo:'No tienes pronósticos activos en este momento.',acertado:'Aún no tienes pronósticos acertados.',fallado:'No tienes pronósticos fallados.'};
+    el.innerHTML=`<p style="color:var(--muted);font-size:.85rem">${msgs[S.pronoFiltro]}</p>`;
+    return;
+  }
+  el.innerHTML=lista.map(p=>`
+    <div class="pronostico-item">
+      <div class="pro-info">
+        <div class="match-name">${p.match}</div>
+        <div class="pick-name">${p.pick} &middot; Cuota ${p.cuota.toFixed(2)}</div>
+      </div>
+      <div class="pro-montos">
+        <div class="invertido">Invertido: ${p.cantidad.toLocaleString('es-ES')} €</div>
+        <div class="retorno">Retorno potencial: ${p.retorno.toLocaleString('es-ES',{maximumFractionDigits:2})} €</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="pro-estado ${p.res==='ok'?'pro-ok':p.res==='fail'?'pro-fail':'pro-pend'}">${p.res==='ok'?'Acertado':p.res==='fail'?'Fallado':'Activo'}</span>
+        ${p.res==='activo'?`<button class="btn-cancelar-pro" onclick="cancelarPronostico('${p.key}')">Cancelar</button>`:''}
+      </div>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
