@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FOBE Beta</title>
+<style>
+:root{--bg:#08111f;--surface:#101b2c;--border:rgba(255,255,255,.08);--text:#edf2f7;--muted:#94a3b8;--green:#22c55e;--blue:#38bdf8;--red:#f87171;--r:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:#08111f;color:var(--text);padding:32px}
+.shell{max-width:1200px;margin:0 auto;display:grid;gap:40px}
+header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+header h1{font-size:2rem;margin-bottom:8px}
+header p{color:var(--muted);max-width:60ch}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);margin-bottom:6px}
+.pill{display:inline-flex;padding:6px 14px;border-radius:999px;font-size:.8rem;border:1px solid rgba(56,189,248,.3);background:rgba(56,189,248,.08);color:#bae6fd}
+.pill.green{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.08);color:#bbf7d0}
+section{display:grid;gap:20px}
+.section-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.section-head h2{font-size:1.3rem;margin-bottom:4px}
+.section-head p{color:var(--muted);font-size:.9rem}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.card{background:#101b2c;border:1px solid var(--border);border-radius:var(--r);padding:20px;display:grid;gap:14px}
+.card h3{font-size:1rem;margin-bottom:2px}
+.card.accent{outline:1px solid rgba(34,197,94,.35)}
+.field{display:grid;gap:6px}
+label{font-size:.85rem;color:var(--muted)}
+input,select{width:100%;background:#0b1526;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font:inherit}
+.btn{border:none;border-radius:999px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;width:100%}
+.btn.p{background:linear-gradient(135deg,#22c55e,#4ade80);color:#052e16}
+.btn.s{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text)}
+.metric{display:grid;gap:6px}
+.metric span:first-child{font-size:.85rem;color:var(--muted)}
+.metric strong{font-size:1.7rem}
+.metric small{font-size:.8rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:.88rem}
+th{color:var(--muted);font-size:.8rem}
+.tag{display:inline-flex;padding:4px 10px;border-radius:999px;font-size:.78rem;border:1px solid var(--border);color:var(--muted)}
+.tag.g{border-color:rgba(34,197,94,.4);color:#bbf7d0}
+.tag.r{border-color:rgba(248,113,113,.4);color:#fee2e2}
+.tag.b{border-color:rgba(56,189,248,.4);color:#bae6fd}
+.note{font-size:.8rem;color:var(--muted);padding:10px 12px;background:rgba(255,255,255,.03);border-radius:8px;border-left:2px solid rgba(56,189,248,.4)}
+ul{padding-left:18px;display:grid;gap:6px;color:var(--muted);font-size:.88rem}
+.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.nav button{padding:8px 16px;border-radius:999px;font-size:.82rem;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer}
+.nav button.active{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:#bbf7d0}
+#auth-state{font-size:.82rem;color:var(--muted)}
+@media(max-width:768px){.grid2,.grid4{grid-template-columns:1fr}.shell{padding:16px}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header>
+  <div>
+    <p class="eyebrow">FOBE · Beta build</p>
+    <h1>Plataforma beta</h1>
+    <p>Base funcional completa: auth, test inicial, challenge engine, rankings y conector de mercados/cuotas.</p>
+  </div>
+  <span class="pill green">Autocontenido · abre sin servidor</span>
+</header>
+
+<!-- NAV -->
+<nav class="nav" id="main-nav">
+  <button class="active" onclick="show('auth')">Acceso</button>
+  <button onclick="show('assessment')">Test inicial</button>
+  <button onclick="show('challenges')">Retos</button>
+  <button onclick="show('rankings')">Rankings</button>
+  <button onclick="show('markets')">Mercados</button>
+</nav>
+
+<!-- AUTH -->
+<div id="tab-auth">
+  <section>
+    <div class="section-head">
+      <div><p class="eyebrow">Módulo 1</p><h2>Registro y acceso</h2><p>Alta de usuario, login y gestión de sesión. Preparado para Supabase Auth.</p></div>
+      <span class="pill">Auth v1</span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Crear cuenta</h3>
+        <form id="signup-form">
+          <div class="field"><label>Nombre</label><input id="sn" type="text" placeholder="Oliver" required /></div>
+          <div class="field" style="margin-top:10px"><label>Email</label><input id="se" type="email" placeholder="oliver@email.com" required /></div>
+          <div class="field" style="margin-top:10px"><label>Contraseña</label><input id="sp" type="password" placeholder="••••••••" minlength="8" required /></div>
+          <button type="submit" class="btn p" style="margin-top:14px">Crear cuenta</button>
+        </form>
+        <div class="note">En producción llamará a <code>supabase.auth.signUp()</code></div>
+      </div>
+      <div class="card">
+        <h3>Iniciar sesión</h3>
+        <form id="login-form">
+          <div class="field"><label>Email</label><input id="le" type="email" placeholder="oliver@email.com" required /></div>
+          <div class="field" style="margin-top:10px"><label>Contraseña</label><input id="lp" type="password" placeholder="••••••••" required /></div>
+          <button type="submit" class="btn p" style="margin-top:14px">Entrar</button>
+        </form>
+        <div class="inline" style="margin-top:4px">
+          <button class="btn s" style="width:auto;padding:9px 16px" onclick="logout()">Cerrar sesión</button>
+          <span id="auth-state">Estado: sin sesión</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ASSESSMENT -->
+<div id="tab-assessment" style="display:none">
+  <section>
+    <div class="section-head">
+      <div><p class="eyebrow">Módulo 2</p><h2>Test inicial de habilidad</h2><p>Clasifica al usuario en liga Bronze / Silver / Gold según perfil.</p></div>
+      <span class="pill">Clasificación automática</span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <form id="assessment-form">
+          <div class="field"><label>Experiencia apostando</label>
+            <select id="exp">
+              <option value="">Selecciona…</option>
+              <option value="0">Menos de 1 año</option>
+              <option value="1">1 a 3 años</option>
+              <option value="2">3 a 5 años</option>
+              <option value="3">Más de 5 años</option>
+            </select></div>
+          <div class="field" style="margin-top:10px"><label>Gestión de banca</label>
+            <select id="bank">
+              <option value="">Selecciona…</option>
+              <option value="0">Sin stake fijo</option>
+              <option value="1">Stake básico sin registro</option>
+              <option value="2">Stake estructurado con registro</option>
+              <option value="3">Banca profesional</option>
+            </select></div>
+          <div class="field" style="margin-top:10px"><label>Conocimiento de mercados</label>
+            <select id="mkt">
+              <option value="">Selecciona…</option>
+              <option value="0">Solo 1X2</option>
+              <option value="1">Over/under y hándicaps</option>
+              <option value="2">Mercados avanzados</option>
+              <option value="3">Valor, closing line, contexto</option>
+            </select></div>
+          <div class="field" style="margin-top:10px"><label>Deporte principal</label>
+            <select id="sport-test">
+              <option value="">Selecciona…</option>
+              <option value="football">Fútbol</option>
+              <option value="basketball">Baloncesto</option>
+              <option value="tennis">Tenis</option>
+            </select></div>
+          <button type="submit" class="btn p" style="margin-top:14px">Calcular perfil</button>
+        </form>
+      </div>
+      <div class="card accent">
+        <h3>Resultado</h3>
+        <div class="metric"><span>Puntuación</span><strong id="a-score">—</strong></div>
+        <div class="metric"><span>Liga recomendada</span><strong id="a-league">Pendiente</strong></div>
+        <p id="a-summary" style="color:var(--muted);font-size:.88rem">Completa el formulario para obtener tu clasificación inicial.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CHALLENGES -->
+<div id="tab-challenges" style="display:none">
+  <section>
+    <div class="section-head">
+      <div><p class="eyebrow">Módulo 3</p><h2>Challenge engine</h2><p>PM, drawdown, picks y estado. Reglas aplicadas automáticamente.</p></div>
+      <span class="pill">Motor activo</span>
+    </div>
+    <div class="grid4">
+      <div class="card metric"><span>Prize Money actual</span><strong id="pm-val">10.000 €</strong><small>Recalculado en cada pick</small></div>
+      <div class="card metric"><span>Drawdown</span><strong id="dd-val">0 %</strong><small>Límite: −40 % del PM inicial</small></div>
+      <div class="card metric"><span>Picks totales</span><strong id="picks-val">0</strong><small>Mínimo exigido pendiente de config</small></div>
+      <div class="card metric"><span>Estado</span><strong id="status-val">Activo</strong><small>Activo / Completado / Roto</small></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Registrar pick</h3>
+        <form id="pick-form">
+          <div class="field"><label>Deporte</label>
+            <select id="p-sport"><option value="">Selecciona…</option><option>Fútbol</option><option>Baloncesto</option><option>Tenis</option></select></div>
+          <div class="field" style="margin-top:10px"><label>Mercado</label><input id="p-market" type="text" placeholder="Ganador, over/under…" required /></div>
+          <div class="field" style="margin-top:10px"><label>Cuota</label><input id="p-odds" type="number" min="1.01" step="0.01" placeholder="1.80" required /></div>
+          <div class="field" style="margin-top:10px"><label>Resultado</label>
+            <select id="p-result"><option value="">Selecciona…</option><option value="win">Acertado</option><option value="loss">Fallado</option><option value="void">Void</option></select></div>
+          <button type="submit" class="btn p" style="margin-top:14px">Registrar pick</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Reglas activas</h3>
+        <ul>
+          <li>+2,5 % del PM inicial por pick acertado</li>
+          <li>−15 % del PM inicial por pick fallado</li>
+          <li>Void no modifica el PM</li>
+          <li>Roto si PM ≤ 60 % del inicial</li>
+          <li>Completado si PM ≥ 120 % del inicial</li>
+        </ul>
+        <div class="note" style="margin-top:8px">En producción estas reglas vivirán en una función SQL de Supabase para evitar manipulación en cliente.</div>
+        <div id="pick-log" style="display:grid;gap:6px;margin-top:8px;max-height:160px;overflow-y:auto"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- RANKINGS -->
+<div id="tab-rankings" style="display:none">
+  <section>
+    <div class="section-head">
+      <div><p class="eyebrow">Módulo 4</p><h2>Rankings y ligas</h2><p>Tabla global y movimientos automáticos.</p></div>
+      <span class="pill">Liga system</span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h3>Ranking global</h3>
+          <select id="league-filter" onchange="renderRanking(this.value)" style="width:auto;padding:8px 12px">
+            <option value="all">Todas las ligas</option>
+            <option value="Gold">Gold</option>
+            <option value="Silver">Silver</option>
+            <option value="Bronze">Bronze</option>
+          </select>
+        </div>
+        <table><thead><tr><th>#</th><th>Usuario</th><th>Liga</th><th>PM</th><th>Win rate</th></tr></thead>
+        <tbody id="ranking-body"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Movimientos de liga</h3>
+        <div id="movements" style="display:grid;gap:8px"></div>
+        <div class="note" style="margin-top:8px">Los movimientos se calcularán automáticamente por score, drawdown y nº de picks completados.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- MARKETS -->
+<div id="tab-markets" style="display:none">
+  <section>
+    <div class="section-head">
+      <div><p class="eyebrow">Módulo 5</p><h2>Mercados y cuotas</h2><p>Estructura API-ready. Ahora con datos mock; se conecta a proveedor real con key segura en back.</p></div>
+      <span class="pill">API-ready</span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <form id="odds-form">
+          <div class="field"><label>Deporte</label>
+            <select id="o-sport"><option value="soccer">Fútbol</option><option value="basketball">Baloncesto</option><option value="tennis">Tenis</option></select></div>
+          <div class="field" style="margin-top:10px"><label>Mercado</label>
+            <select id="o-market"><option value="h2h">Ganador (H2H)</option><option value="spreads">Hándicap</option><option value="totals">Totales</option></select></div>
+          <button type="submit" class="btn p" style="margin-top:14px">Cargar eventos</button>
+        </form>
+        <div class="note">Al conectar la API real, este form hará una llamada segura al back/edge function con tu API key.</div>
+      </div>
+      <div class="card">
+        <h3>Eventos disponibles</h3>
+        <div id="odds-results" style="display:grid;gap:8px"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</div><!-- /shell -->
+
+<script>
+// State
+const S = {
+  pmInit: 10000, pmCurr: 10000, picks: 0, wins: 0, losses: 0,
+  status: 'Activo', logItems: []
+};
+
+// Nav
+function show(tab) {
+  ['auth','assessment','challenges','rankings','markets'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+  });
+  document.querySelectorAll('#main-nav button').forEach((b,i) => {
+    b.classList.toggle('active', ['auth','assessment','challenges','rankings','markets'][i]===tab);
+  });
+  if (tab==='rankings') { renderRanking('all'); renderMovements(); }
+  if (tab==='markets') { renderOdds(); }
+}
+
+// Auth (demo)
+document.getElementById('signup-form').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('auth-state').textContent = 'Estado: usuario creado (demo)';
+  e.target.reset();
+});
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('auth-state').textContent = 'Estado: sesión activa (demo)';
+  e.target.reset();
+});
+function logout() { document.getElementById('auth-state').textContent = 'Estado: sesión cerrada'; }
+
+// Assessment
+document.getElementById('assessment-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const score = [+document.getElementById('exp').value||0,
+    +document.getElementById('bank').value||0,
+    +document.getElementById('mkt').value||0].reduce((a,b)=>a+b,0) + 3;
+  const league = score>=9?'Gold':score>=6?'Silver':'Bronze';
+  document.getElementById('a-score').textContent = score + ' / 12';
+  document.getElementById('a-league').textContent = league;
+  document.getElementById('a-summary').textContent =
+    'Perfil clasificado en liga ' + league + '. Este dato se guardará en Supabase para asignar el challenge correspondiente.';
+});
+
+// Challenges
+function updateMetrics() {
+  const dd = Math.max(0, ((S.pmInit - S.pmCurr) / S.pmInit)*100);
+  document.getElementById('pm-val').textContent = Math.round(S.pmCurr).toLocaleString('es-ES') + ' €';
+  document.getElementById('dd-val').textContent = dd.toFixed(1) + ' %';
+  document.getElementById('picks-val').textContent = S.picks;
+  document.getElementById('status-val').textContent = S.status;
+}
+document.getElementById('pick-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const r = document.getElementById('p-result').value;
+  const before = S.pmCurr;
+  if (r==='win') { S.pmCurr += S.pmInit*0.025; S.wins++; }
+  else if (r==='loss') { S.pmCurr = Math.max(0, S.pmCurr - S.pmInit*0.15); S.losses++; }
+  S.picks++;
+  if (S.pmCurr <= S.pmInit*0.6) S.status = 'Roto';
+  else if (S.pmCurr >= S.pmInit*1.2) S.status = 'Completado';
+  const delta = S.pmCurr - before;
+  S.logItems.unshift({sport:document.getElementById('p-sport').value||'—',
+    market:document.getElementById('p-market').value,
+    result:r, delta});
+  renderLog();
+  updateMetrics();
+  e.target.reset();
+});
+function renderLog() {
+  document.getElementById('pick-log').innerHTML = S.logItems.slice(0,8).map(l => {
+    const cls = l.result==='win'?'g':l.result==='loss'?'r':'';
+    const sign = l.delta>=0?'+':'';
+    return `<div style="display:flex;justify-content:space-between;font-size:.8rem;padding:8px;background:rgba(255,255,255,.03);border-radius:8px">
+      <span>${l.sport} · ${l.market}</span>
+      <span class="tag ${cls}">${sign}${Math.round(l.delta).toLocaleString('es-ES')} €</span></div>`;
+  }).join('');
+}
+
+// Rankings
+const RANKING = [
+  {r:1,u:'Oliver',l:'Gold',pm:11800,wr:'68%'},
+  {r:2,u:'Carlos',l:'Silver',pm:10950,wr:'62%'},
+  {r:3,u:'Lucía',l:'Bronze',pm:10320,wr:'58%'},
+  {r:4,u:'Mateo',l:'Silver',pm:9920,wr:'55%'},
+  {r:5,u:'Andrea',l:'Bronze',pm:9750,wr:'53%'}
+];
+function renderRanking(filter) {
+  const rows = filter==='all'?RANKING:RANKING.filter(r=>r.l===filter);
+  document.getElementById('ranking-body').innerHTML = rows.map(r =>
+    `<tr><td>${r.r}</td><td>${r.u}</td>
+    <td><span class="tag ${r.l==='Gold'?'g':r.l==='Silver'?'b':''}">${r.l}</span></td>
+    <td>${r.pm.toLocaleString('es-ES')} €</td><td>${r.wr}</td></tr>`
+  ).join('');
+}
+const MOVEMENTS = [
+  {u:'Oliver',from:'Silver',to:'Gold',type:'up'},
+  {u:'Mateo',from:'Gold',to:'Silver',type:'down'},
+  {u:'Lucía',from:'Bronze',to:'Silver',type:'up'}
+];
+function renderMovements() {
+  document.getElementById('movements').innerHTML = MOVEMENTS.map(m =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:10px">
+      <strong>${m.u}</strong>
+      <span class="tag ${m.type==='up'?'g':'r'}">${m.type==='up'?'↑ Ascenso':'↓ Descenso'} · ${m.from} → ${m.to}</span>
+    </div>`
+  ).join('');
+}
+
+// Markets (mock)
+const ODDS_MOCK = {
+  soccer:[{e:'Real Madrid vs Barcelona',m:'Ganador',o:'1.82 / 3.40 / 4.50'},
+    {e:'Atlético vs Sevilla',m:'Total goles',o:'2.5 over 1.70 / under 2.10'}],
+  basketball:[{e:'Lakers vs Celtics',m:'Hándicap',o:'-4.5 Lakers 1.90'},
+    {e:'GSW vs Heat',m:'Total puntos',o:'215.5 over 1.85'}],
+  tennis:[{e:'Alcaraz vs Sinner',m:'Ganador',o:'Alcaraz 1.65 / Sinner 2.25'},
+    {e:'Djokovic vs Zverev',m:'Total juegos',o:'24.5 over 1.80'}]
+};
+function renderOdds() {
+  const sport = document.getElementById('o-sport').value;
+  const items = ODDS_MOCK[sport]||[];
+  document.getElementById('odds-results').innerHTML = items.length
+    ? items.map(i=>`<div style="padding:12px;background:rgba(255,255,255,.03);border-radius:10px">
+        <strong>${i.e}</strong>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:4px">${i.m} · ${i.o}</p></div>`).join('')
+    : '<p style="color:var(--muted)">Sin datos para este deporte.</p>';
+}
+document.getElementById('odds-form').addEventListener('submit', e => { e.preventDefault(); renderOdds(); });
+
+// Init
+updateMetrics();
+</script>
+</body>
+</html>
